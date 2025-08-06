@@ -3,296 +3,363 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Raksha Bandhan!</title>
+    <title>A Special Rakhi Wish!</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;600&display=swap');
 
         :root {
-            --primary-color: #ff577f;
-            --secondary-color: #ff884b;
-            --accent-color: #ffd384;
-            --bg-color: #fff9f0;
-            --text-color: #5d4037;
+            --bg-start: #6a11cb;
+            --bg-end: #2575fc;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --text-color: #f0e6ff;
+            --heading-color: #ffffff;
+            --accent-color: #f7b733;
+            --shadow-color: rgba(0, 0, 0, 0.25);
         }
 
-        body, html {
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
+        }
+
+        body {
+            height: 100vh;
+            font-family: 'Montserrat', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: var(--bg-color);
-            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, var(--bg-start), var(--bg-end), #fc466b, #3f5efb);
+            background-size: 400% 400%;
+            animation: gradientBG 20s ease infinite;
             overflow: hidden;
+            perspective: 1200px;
         }
 
-        #canvas {
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- Curtain --- */
+        .curtain-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
+            z-index: 100;
             pointer-events: none;
         }
+
+        .curtain {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: #8e2de2;
+            transition: transform 2s cubic-bezier(0.86, 0, 0.07, 1);
+        }
+
+        .curtain-left {
+            left: 0;
+            background: linear-gradient(to right, #4a00e0, #8e2de2);
+        }
+
+        .curtain-right {
+            right: 0;
+            background: linear-gradient(to left, #4a00e0, #8e2de2);
+        }
         
-        .container {
-            position: relative;
-            z-index: 1;
+        body.scene-open .curtain-left { transform: translateX(-100%); }
+        body.scene-open .curtain-right { transform: translateX(100%); }
+        
+        /* --- Screens --- */
+        .screen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            background: rgba(255, 255, 255, 0.85);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
             width: 90%;
-            transform: scale(0.9);
-            animation: fadeIn 0.8s forwards;
-        }
-
-        #name-screen h1 {
-            font-family: 'Lobster', cursive;
-            color: var(--primary-color);
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        input {
-            width: calc(100% - 20px);
-            padding: 12px;
-            border: 2px solid var(--accent-color);
-            border-radius: 10px;
-            font-size: 1em;
-            text-align: center;
-            color: var(--text-color);
-            background: #fff;
+            max-width: 450px;
+            padding: 30px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 var(--shadow-color);
         }
         
-        input::placeholder {
-            color: #bcaaa4;
+        .screen.active {
+            display: flex;
+            animation: fadeInScaleUp 1s 1.5s forwards;
         }
 
-        .btn {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 15px 30px;
-            border: none;
+        @keyframes fadeInScaleUp {
+            from { opacity: 0; transform: scale(0.8) rotateX(-20deg); }
+            to { opacity: 1; transform: scale(1) rotateX(0deg); }
+        }
+
+        /* --- Name Screen --- */
+        #name-screen h1 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--heading-color);
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        
+        .input-group { width: 100%; margin-bottom: 20px; }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            color: var(--heading-color);
+            font-size: 1.1em;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .input-field::placeholder { color: rgba(255, 255, 255, 0.7); }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            transform: scale(1.05);
+        }
+
+        .main-btn {
+            padding: 15px 40px;
             border-radius: 50px;
+            border: none;
+            background: var(--accent-color);
+            color: #333;
             font-size: 1.2em;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(255, 87, 127, 0.4);
-        }
-
-        #card-screen {
-            display: none;
+            transition: all 0.3s ease;
         }
         
-        .card-content h1 {
-            font-family: 'Lobster', cursive;
+        .main-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* --- Card Screen --- */
+        #card-screen.active {
+            animation: fadeInScaleUp 1s forwards;
+        }
+
+        .card-inner { transition: transform 0.5s; }
+        .card-inner h1 {
+            font-family: 'Dancing Script', cursive;
             font-size: 2.8em;
-            color: var(--primary-color);
-            animation: popIn 0.6s 0.5s backwards;
+            color: var(--heading-color);
+            margin-bottom: 25px;
+            animation: slideInDown 1s 0.5s forwards;
         }
         
-        .card-content p {
-            font-size: 1.1em;
+        .rakhi-svg {
+            width: 120px;
+            margin: 20px auto;
+            animation: pulse-grow 2.5s infinite ease-in-out, slideInDown 1s 0.8s forwards;
+        }
+        
+        #message-p {
             color: var(--text-color);
-            line-height: 1.6;
-            margin: 20px 0;
-            animation: popIn 0.6s 0.8s backwards;
+            font-size: 1.1em;
+            line-height: 1.7;
+            height: 100px;
+            animation: slideInUp 1s 1s forwards;
         }
 
-        .from-name {
-            font-weight: bold;
-            color: var(--secondary-color);
+        #sender-p {
+            font-weight: 600;
             font-size: 1.2em;
+            color: var(--heading-color);
+            margin-top: 30px;
+            animation: slideInUp 1s 1.2s forwards;
         }
 
-        .share-buttons {
-            margin-top: 30px;
-            animation: popIn 0.6s 1.1s backwards;
+        #share-container {
+            margin-top: 40px;
+            opacity: 0;
+            animation: fadeIn 1s 2.5s forwards;
+        }
+
+        /* --- General Animations --- */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse-grow {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.1); filter: brightness(1.2); }
         }
         
-        .share-btn {
-            display: inline-block;
-            margin: 0 10px;
-            padding: 10px 15px;
-            border-radius: 8px;
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            transition: opacity 0.3s;
-        }
-        .share-btn:hover {
-            opacity: 0.8;
-        }
-
-        .whatsapp { background: #25D366; }
-        .telegram { background: #0088cc; }
-        .copy-link { background: #607D8B; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes popIn {
-            from { opacity: 0; transform: scale(0.8) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
     </style>
 </head>
-<body>
+<body class="">
 
-    <canvas id="canvas"></canvas>
-
-    <div id="name-screen" class="container">
-        <h1>Happy Rakhi!</h1>
+    <div class="curtain-container">
+        <div class="curtain curtain-left"></div>
+        <div class="curtain curtain-right"></div>
+    </div>
+    
+    <div id="name-screen" class="screen">
+        <h1>A Wish For You</h1>
         <div class="input-group">
-            <input type="text" id="receiverNameInput" placeholder="Enter Your Brother/Sister's Name">
+            <input type="text" id="receiverNameInput" class="input-field" placeholder="Enter Sibling's Name">
         </div>
         <div class="input-group">
-            <input type="text" id="senderNameInput" placeholder="Enter Your Name">
+            <input type="text" id="senderNameInput" class="input-field" placeholder="Enter Your Name">
         </div>
-        <button id="createCardBtn" class="btn">Create Card</button>
+        <button id="createCardBtn" class="main-btn">Create Magic</button>
     </div>
 
-    <div id="card-screen" class="container">
-        <div class="card-content">
-            <h1 id="greetingTitle">Happy Raksha Bandhan,</h1>
-            <p id="greetingMessage">Wishing you a very joyful Rakhi, dear <span id="receiverNameDisplay" class="from-name">[Sibling's Name]</span>. May our bond of love and togetherness grow stronger every day.</p>
-            <p>With tons of love,<br><span id="senderNameDisplay" class="from-name">[Your Name]</span></p>
-            <div class="share-buttons">
-                <a href="#" class="share-btn whatsapp" id="whatsapp-share">Share on WhatsApp</a>
-                <a href="#" class="share-btn telegram" id="telegram-share">Share on Telegram</a>
-                <button class="share-btn copy-link" id="copy-link-share">Copy Link</button>
+    <div id="card-screen" class="screen">
+        <div id="card-inner" class="card-inner">
+            <h1 id="greeting-h1">Happy Raksha Bandhan!</h1>
+            
+            <svg class="rakhi-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="30" fill="#ff7e5f"/>
+                <circle cx="50" cy="50" r="20" fill="#feb47b"/>
+                <circle cx="50" cy="50" r="10" fill="#f7b733"/>
+                <g fill="#ff7e5f">
+                    <rect x="47" y="0" width="6" height="20" rx="3"/>
+                    <rect x="47" y="80" width="6" height="20" rx="3"/>
+                    <rect x="0" y="47" width="20" height="6" rx="3"/>
+                    <rect x="80" y="47" width="20" height="6" rx="3"/>
+                </g>
+            </svg>
+            
+            <p id="message-p"></p>
+            <p id="sender-p"></p>
+            
+            <div id="share-container" style="display: none;">
+                <button id="shareBtn" class="main-btn">Share This Wish</button>
             </div>
         </div>
     </div>
 
     <audio id="bg-music" loop>
-        <source src="https://www.chosic.com/wp-content/uploads/2021/08/Through-the-Alley.mp3" type="audio/mpeg">
+        <source src="https://assets.mixkit.co/music/preview/mixkit-a-new-beginning-29.mp3" type="audio/mpeg">
     </audio>
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Elements
+            const body = document.body;
             const nameScreen = document.getElementById('name-screen');
             const cardScreen = document.getElementById('card-screen');
             const createCardBtn = document.getElementById('createCardBtn');
-            const bgMusic = document.getElementById('bg-music');
+            const music = document.getElementById('bg-music');
             
-            // Petals animation setup
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            const receiverInput = document.getElementById('receiverNameInput');
+            const senderInput = document.getElementById('senderNameInput');
 
-            let petals = [];
-            const petalColors = ['#ffc0cb', '#ffb6c1', '#ffa07a', '#ff7f50'];
-            
-            function createPetal() {
-                petals.push({
-                    x: Math.random() * canvas.width,
-                    y: -10,
-                    size: Math.random() * 5 + 3,
-                    speed: Math.random() * 2 + 1,
-                    color: petalColors[Math.floor(Math.random() * petalColors.length)],
-                    sway: Math.random() * 2 - 1,
-                    swaySpeed: Math.random() * 0.05
+            // --- Typewriter Effect ---
+            let typeTimeout;
+            function typewriter(text, element, callback) {
+                clearTimeout(typeTimeout);
+                let i = 0;
+                element.innerHTML = "";
+                function type() {
+                    if (i < text.length) {
+                        element.innerHTML += text.charAt(i);
+                        i++;
+                        typeTimeout = setTimeout(type, 50);
+                    } else if(callback) {
+                        callback();
+                    }
+                }
+                type();
+            }
+
+            // --- The main logic ---
+            function startExperience(isViewer) {
+                body.classList.add('scene-open');
+
+                const params = new URLSearchParams(window.location.search);
+                const receiverName = params.get('r') || receiverInput.value.trim() || "My Dearest Sibling";
+                const senderName = params.get('s') || senderInput.value.trim() || "Me";
+                
+                // Show form if not a viewer, otherwise go straight to card
+                if (!isViewer) {
+                    nameScreen.classList.add('active');
+                } else {
+                    displayCard(receiverName, senderName, true);
+                }
+
+                // Attach event listener for form submission
+                createCardBtn.addEventListener('click', () => {
+                     const rName = receiverInput.value.trim() || "My Dearest Sibling";
+                     const sName = senderInput.value.trim() || "Me";
+                     displayCard(rName, sName, false);
                 });
             }
 
-            function animatePetals() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                for (let i = 0; i < petals.length; i++) {
-                    let p = petals[i];
-                    p.y += p.speed;
-                    p.x += Math.sin(p.y * p.swaySpeed) * p.sway;
-                    
-                    ctx.beginPath();
-                    ctx.fillStyle = p.color;
-                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    if (p.y > canvas.height) {
-                        petals.splice(i, 1);
-                        i--;
-                    }
+            function displayCard(receiver, sender, isViewer) {
+                // Animate out the name screen
+                nameScreen.style.animation = 'fadeOutScaleDown 0.5s forwards';
+                nameScreen.addEventListener('animationend', () => nameScreen.classList.remove('active'), { once: true });
+                
+                // Show and animate in the card screen
+                cardScreen.classList.add('active');
+
+                // Personalize the card
+                document.getElementById('greeting-h1').textContent = `Dear ${receiver},`;
+                const message = `On this special day, I'm sending you all my love. May our bond remain as strong and beautiful as ever. Happy Rakhi!`;
+                typewriter(message, document.getElementById('message-p'), () => {
+                    document.getElementById('sender-p').innerHTML = `With love,<br>${sender}`;
+                });
+                
+                // Play music on interaction
+                music.play().catch(e => console.warn("Audio play was blocked."));
+
+                // Logic for showing/hiding share button
+                if (!isViewer) {
+                    const shareContainer = document.getElementById('share-container');
+                    const shareBtn = document.getElementById('shareBtn');
+                    shareContainer.style.display = 'block';
+
+                    shareBtn.onclick = () => {
+                        const url = `${window.location.origin}${window.location.pathname}?r=${encodeURIComponent(receiver)}&s=${encodeURIComponent(sender)}`;
+                        navigator.clipboard.writeText(url).then(() => {
+                            shareBtn.textContent = 'Link Copied!';
+                            setTimeout(() => { shareBtn.textContent = 'Share This Wish'; }, 2000);
+                        }).catch(err => {
+                             alert('Could not copy link. Please do it manually.');
+                        });
+                    };
                 }
-                if (petals.length < 50) createPetal();
-                requestAnimationFrame(animatePetals);
+
+                // Parallax effect on card
+                const cardInner = document.getElementById('card-inner');
+                cardScreen.addEventListener('mousemove', (e) => {
+                    const { left, top, width, height } = cardScreen.getBoundingClientRect();
+                    const x = (e.clientX - left - width / 2) / width * 2;
+                    const y = (e.clientY - top - height / 2) / height * 2;
+                    cardInner.style.transform = `rotateY(${x * 5}deg) rotateX(${-y * 5}deg)`;
+                });
             }
 
-            function initCardCreation() {
-                const receiverName = document.getElementById('receiverNameInput').value.trim() || "My Dear Sibling";
-                const senderName = document.getElementById('senderNameInput').value.trim() || "Your Loving Sibling";
-
-                document.getElementById('receiverNameDisplay').textContent = receiverName;
-                document.getElementById('senderNameDisplay').textContent = senderName;
-                document.getElementById('greetingTitle').textContent = `Happy Rakhi, ${receiverName}!`;
-
-                nameScreen.style.display = 'none';
-                cardScreen.style.animation = 'fadeIn 1s forwards';
-                cardScreen.style.display = 'block';
-
-                bgMusic.play().catch(e => console.error("Audio playback failed:", e));
-                animatePetals();
-                
-                setupShareLinks(senderName, receiverName);
+            // Check if loaded from a share link
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('r') && urlParams.has('s')) {
+                startExperience(true);
+            } else {
+                startExperience(false);
             }
-
-            function setupShareLinks(sender, receiver) {
-                const pageUrl = `${window.location.href.split('?')[0]}?s=${encodeURIComponent(sender)}&r=${encodeURIComponent(receiver)}`;
-                const shareText = `Happy Rakhi, ${receiver}! ✨ Check out this special card from ${sender}:`;
-
-                document.getElementById('whatsapp-share').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + pageUrl)}`;
-                document.getElementById('telegram-share').href = `https://t.me/share/url?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(shareText)}`;
-                
-                document.getElementById('copy-link-share').onclick = (e) => {
-                    navigator.clipboard.writeText(pageUrl).then(() => {
-                        e.target.textContent = 'Copied!';
-                        setTimeout(() => { e.target.textContent = 'Copy Link'; }, 2000);
-                    });
-                };
-            }
-            
-            function showCardFromURL() {
-                const params = new URLSearchParams(window.location.search);
-                const sender = params.get('s');
-                const receiver = params.get('r');
-                
-                if (sender && receiver) {
-                    document.getElementById('receiverNameInput').value = receiver;
-                    document.getElementById('senderNameInput').value = sender;
-                    initCardCreation();
-                }
-            }
-            
-            createCardBtn.addEventListener('click', initCardCreation);
-            
-            // Check for URL params on page load
-            showCardFromURL();
-            
-            window.addEventListener('resize', () => {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            });
         });
     </script>
 </body>
-</html>
+    </html>
